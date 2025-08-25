@@ -1,0 +1,26 @@
+# build
+node_modules/
+dist/
+.vite/
+.vercel/
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# OS/editor
+.DS_Store
+
+# data & temp
+backend/data/*
+!backend/data/.keep
+*.bak
+
+# env/secrets
+.env
+backend/.env
+
+# spreadsheets / seed files
+*.xlsx
+*.ods
