@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"3df48a24b8774b7e8841294e31600c4b","collectionName":"grammar_questions","type":"collection"}

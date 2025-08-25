@@ -12,13 +12,13 @@ from .routers import dictionary, grammar, vocab, analytics, ai, tests, english_t
 origins = ["https://<your-vercel-domain>.vercel.app"]
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
-DB_NAME   = os.getenv("DB_NAME", "aasaasi")  # set to your DB name
+DB_NAME   = os.getenv("DB_NAME", "aasasasi_db")  
 
 app = FastAPI(title="Aasaasi API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["https://aasaasi-main.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

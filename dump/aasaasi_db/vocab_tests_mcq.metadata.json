@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"meaning":{"$numberInt":"1"}},"name":"meaning_1"}],"uuid":"2fc4be7d998a40bfb55f107ac729e9c2","collectionName":"vocab_tests_mcq","type":"collection"}

@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"word":{"$numberInt":"1"}},"name":"word_1"}],"uuid":"8fac2db1cc5b43aa96e4bd7b8f797a39","collectionName":"vocab_words","type":"collection"}
