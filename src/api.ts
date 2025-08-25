@@ -1,53 +1,50 @@
-const API = import.meta.env.VITE_API_URL;
+cat > src/lib/api.ts <<'TS'
+// Build-time base (Vite). Also tolerate Next-style if it sneaks in.
+const BUILT_BASE: string | undefined =
+  (import.meta as any)?.env?.VITE_API_BASE_URL ??
+  ((typeof process !== "undefined" && (process as any).env?.NEXT_PUBLIC_API_BASE_URL) || undefined);
 
-export async function health() {
-  const r = await fetch(`${API}/health`); return r.json();
+// Runtime override if you ever set it from the console or HTML.
+declare global {
+  interface Window { __API_BASE__?: string }
 }
+const RUNTIME_BASE = typeof window !== "undefined" ? (window as any).__API_BASE__ : undefined;
 
-// WoD words
-export async function getWodToday(date?: string) {
-  const qs = date ? `?date=${encodeURIComponent(date)}` : "";
-  const r = await fetch(`${API}/wotd/today${qs}`);
-  return r.json();
-}
-export async function getWodArchive(limit = 30, offset = 0) {
-  const r = await fetch(`${API}/wotd/archive?limit=${limit}&offset=${offset}`);
-  return r.json();
-}
+// Final base, with sensible fallbacks
+export const API_BASE: string =
+  RUNTIME_BASE ??
+  BUILT_BASE ??
+  (typeof window === "undefined" ? "http://localhost:8000" : "/api");
 
-// Idioms
-export async function getIdiomCurrent(weekStart?: string) {
-  const qs = weekStart ? `?weekStart=${encodeURIComponent(weekStart)}` : "";
-  const r = await fetch(`${API}/idioms/current${qs}`);
-  return r.json();
-}
-export async function getIdiomArchive(limit = 26, offset = 0) {
-  const r = await fetch(`${API}/idioms/archive?limit=${limit}&offset=${offset}`);
-  return r.json();
-}
+// Expose for quick checks in DevTools
+if (typeof window !== "undefined") (window as any).__API_BASE__ = API_BASE;
 
-// Dictionary
-export async function dictSearch(q: string, direction = "en-so", limit = 20) {
-  const p = new URLSearchParams({ q, direction, limit: String(limit) });
-  const r = await fetch(`${API}/dictionary/search?${p}`);
-  return r.json();
+function join(base: string, path: string) {
+  const b = base.endsWith("/") ? base.slice(0, -1) : base;
+  const p = path.startsWith("/") ? path : `/${path}`;
+  return `${b}${p}`;
 }
 
-// Tests
-export type TestKind = "wod" | "vocab" | "idiom" | "english";
-
-export async function startTest(kind: TestKind) {
-  const r = await fetch(`${API}/tests/start?kind=${kind}`, { method: "POST" });
-  return r.json(); // { testId, sections: [{name, items: [...] }] }
-}
-export async function submitTest(payload: {
-  testId: string;
-  answers: Array<{ section: string; itemId: number; answer: string }>;
-}) {
-  const r = await fetch(`${API}/tests/submit`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(join(API_BASE, path), {
+    ...init,
+    headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
   });
-  return r.json(); // { testId, score, sectionBreakdown, feedback }
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "");
+    throw new Error(`HTTP ${res.status} ${res.statusText}${txt ? ` — ${txt}` : ""}`);
+  }
+  if (res.status === 204) return undefined as unknown as T;
+  return res.json() as Promise<T>;
 }
+
+export const api = {
+  get: <T>(path: string) => request<T>(path),
+  post: <T>(path: string, body?: unknown, init?: RequestInit) =>
+    request<T>(path, { method: "POST", body: body == null ? undefined : JSON.stringify(body), ...init }),
+  put:  <T>(path: string, body?: unknown, init?: RequestInit) =>
+    request<T>(path, { method: "PUT",  body: body == null ? undefined : JSON.stringify(body), ...init }),
+  delete: <T>(path: string, init?: RequestInit) =>
+    request<T>(path, { method: "DELETE", ...init }),
+};
+TS
