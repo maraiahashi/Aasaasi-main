@@ -27,3 +27,4 @@ backend/.env
 .vercel
 .env.production
 .env.production
+dump/

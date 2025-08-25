@@ -9,16 +9,18 @@ from pymongo import MongoClient, DESCENDING
 
 from .routers import dictionary, grammar, vocab, analytics, ai, tests, english_test, idioms, content
 
-origins = ["https://<your-vercel-domain>.vercel.app"]
+
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
 DB_NAME   = os.getenv("DB_NAME", "aasasasi_db")  
 
 app = FastAPI(title="Aasaasi API")
 
+origins = [o.strip() for o in os.getenv("CORS_ORIGINS","").split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://aasaasi-main.vercel.app/"],
+    allow_origins=origins if origins else ["*"],  # tighten in prod
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
