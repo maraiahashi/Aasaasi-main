@@ -9,10 +9,7 @@ from pymongo import MongoClient, DESCENDING
 
 from .routers import dictionary, grammar, vocab, analytics, ai, tests, english_test, idioms, content
 
-origins = [
-    "https://Aasaasi-main.vercel.app",
-    "http://localhost:5173"
-]
+origins = ["https://<your-vercel-domain>.vercel.app"]
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
 DB_NAME   = os.getenv("DB_NAME", "aasaasi")  # set to your DB name

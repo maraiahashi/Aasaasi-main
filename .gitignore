@@ -24,3 +24,4 @@ backend/.env
 # spreadsheets / seed files
 *.xlsx
 *.ods
+.vercel
