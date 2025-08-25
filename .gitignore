@@ -26,3 +26,4 @@ backend/.env
 *.ods
 .vercel
 .env.production
+.env.production
