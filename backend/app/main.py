@@ -63,3 +63,8 @@ def shim_idiom():
        or db["idioms"].find_one({}, {"_id": 0}, sort=[("createdAt", DESCENDING)])
     if not doc: raise HTTPException(404, "No idiom set")
     return doc
+
+# Friendly home page instead of 404 at "/"
+@app.get("/")
+def root():
+    return {"ok": True, "service": "Aasaasi API", "docs": "/docs", "health": "/api/health"}
