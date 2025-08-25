@@ -25,3 +25,4 @@ backend/.env
 *.xlsx
 *.ods
 .vercel
+.env.production
