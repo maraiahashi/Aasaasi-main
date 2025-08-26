@@ -1,47 +1,41 @@
-
 # backend/app/main.py
-from __future__ import annotations
-import os, re
-from importlib import import_module
-from typing import List
-
+import os
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
 
 app = FastAPI(title="Aasaasi API")
 
-# --- CORS -------------------------------------------------------------
-_env_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
-allow_regex = r"^https?://([a-z0-9-]+\.)*vercel\.app(:\d+)?$"  # any *.vercel.app
-origins: List[str] = _env_origins or ["http://localhost:5173", "http://127.0.0.1:5173"]
+# ---- CORS (works for all Vercel preview/prod domains + optional explicit list)
+_allow_regex = r"https://([a-z0-9-]+\.)*vercel\.app"
+_explicit = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_origin_regex=allow_regex,
+    allow_origins=_explicit,
+    allow_origin_regex=_allow_regex,  # covers preview + prod aliases
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- DB (Mongo) -------------------------------------------------------
-mongo_client: MongoClient | None = None
-
+# ---- Mongo (fast ping on startup; fail soft → db=None so routes return 503)
 @app.on_event("startup")
-def _startup():
-    global mongo_client
-    url = os.getenv("MONGO_URL", "mongodb://127.0.0.1:27017")
+def _init_db():
+    app.state.db = None
+    url = os.getenv("MONGO_URL")           # e.g. mongodb+srv://user:pass@cluster/... 
     name = os.getenv("MONGO_DB", "aasaasi_db")
-    mongo_client = MongoClient(url)
-    app.state.db = mongo_client[name]
+    if not url:
+        print("⚠️  MONGO_URL not set; starting without DB")
+        return
+    try:
+        client = MongoClient(url, serverSelectionTimeoutMS=2000, connectTimeoutMS=2000)
+        client.admin.command("ping")
+        app.state.db = client[name]
+        print("✅ Connected to Mongo")
+    except Exception as e:
+        print(f"⚠️  Mongo unavailable: {e!r} (routes will return 503)")
 
-@app.on_event("shutdown")
-def _shutdown():
-    global mongo_client
-    if mongo_client:
-        mongo_client.close()
-
-# --- Root & simple HEAD (Render’s head probe sometimes hits /) --------
+# ---- Probes (Render uses these during deploy)
 @app.get("/")
 def root():
     return {"ok": True, "service": "Aasaasi API", "docs": "/docs", "health": "/api/health"}
@@ -50,51 +44,37 @@ def root():
 def root_head():
     return Response(status_code=200)
 
-# --- Include routers ---------------------------------------------------
-def _include(module_path: str, *, prefix: str = "/api"):
-    """Include a module's 'router' if present. No crash if missing."""
-    try:
-        mod = import_module(module_path)
-        router = getattr(mod, "router", None)
-        if router is not None:
-            # Only add /api prefix if routes inside are NOT already /api/*
-            pre = prefix
-            if module_path.endswith(".probes"):
-                # probes defines absolute '/api/health' and '/' already
-                pre = ""
-            app.include_router(router, prefix=pre)
-    except Exception:
-        # Silently skip if the file isn’t in this project (we don’t want to break prod)
-        pass
+@app.get("/api/health")
+def health():
+    return {"status": "ok", "db": "ready" if app.state.db is not None else "down"}
 
-# Routers under app.routers.*
-_include("app.routers.ai")          # /api/ai/...
-_include("app.routers.dictionary")  # /api/dictionary/...
-_include("app.routers.content")     # /api/content/...
-_include("app.routers.vocab")       # /api/vocab/...
-_include("app.routers.tests")       # /api/tests/...
-_include("app.routers.analytics")
-# Routers under app.routes.*  (kept for backward-compat)
-_include("app.routes.english_test") # /api/english-test/...
-_include("app.routes.grammar")      # /api/grammar/...
-_include("app.routes.idioms")       # /api/idioms/...
-_include("app.routes.probes")       # defines /api/health and '/'/HEAD itself (no extra /api)
+@app.head("/api/health")
+def health_head():
+    return Response(status_code=200)
 
-# Fallback health if probes isn’t present for some reason
+@app.options("/api/health")
+def health_options():
+    return Response(status_code=200)
+
+# ---- Routers (single include per router; keep existing URL shapes)
+from app.routers import dictionary, grammar, vocab, analytics, ai, tests, content
+# english_test / idioms may live in routers/ or routes/ depending on your tree
 try:
-    from fastapi import APIRouter
-    _health_defined = any(str(r.path) == "/api/health" for r in app.router.routes)
-    if not _health_defined:
-        r = APIRouter()
-        @r.get("/api/health")
-        @r.head("/api/health")
-        def _health():
-            return {"status": "ok"}
-        app.include_router(r)
-except Exception as e:
-    import sys, traceback
-    print(f"[router] SKIP {module_path}: {e}", file=sys.stderr)
-    traceback.print_exc()
-    pass
+    from app.routers import english_test  # noqa
+except Exception:
+    from app.routes import english_test    # noqa
+try:
+    from app.routers import idioms  # noqa
+except Exception:
+    from app.routes import idioms    # noqa
 
-
+app.include_router(dictionary.router,   prefix="/api")
+app.include_router(grammar.router,      prefix="/api")
+app.include_router(vocab.router,        prefix="/api")
+app.include_router(analytics.router,    prefix="/api")
+app.include_router(ai.router,           prefix="/api")
+app.include_router(tests.router,        prefix="/api")
+app.include_router(english_test.router, prefix="/api")
+app.include_router(idioms.router,       prefix="/api")
+app.include_router(content.router,      prefix="/api")
+app.include_router(analytics.router,    prefix="/api")
