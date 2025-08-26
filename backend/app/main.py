@@ -74,3 +74,6 @@ def shim_idiom():
 @app.get("/")
 def root():
     return {"ok": True, "service": "Aasaasi API", "docs": "/docs", "health": "/api/health"}
+
+from app.routes.probes import router as probes_router
+app.include_router(probes_router)
