@@ -91,7 +91,10 @@ try:
         def _health():
             return {"status": "ok"}
         app.include_router(r)
-except Exception:
+except Exception as e:
+    import sys, traceback
+    print(f"[router] SKIP {module_path}: {e}", file=sys.stderr)
+    traceback.print_exc()
     pass
 
 

@@ -62,6 +62,14 @@ def idiom_of_the_week(request: Request, x_session_id: str = Header(default="anon
         pass
 
     return out
+# OLD (breaks, because ai.py isn't in app.routes)
+# from .ai import _openai_client, _model, SYSTEM_PROMPT  # type: ignore
+
+# NEW (works no matter what)
+try:
+    from app.routers.ai import _openai_client, _model, SYSTEM_PROMPT  # absolute path
+except Exception:  # local tools fallback
+    from ..routers.ai import _openai_client, _model, SYSTEM_PROMPT    # relative up one pkg
 
 @router.get("/idioms/archive")
 def idiom_archive(
