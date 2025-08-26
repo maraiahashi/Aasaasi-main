@@ -1,4 +1,3 @@
-
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://aasaasi-main.onrender.com/api/$1" }

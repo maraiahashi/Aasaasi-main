@@ -1,78 +1,97 @@
-# backend/app/main.py
-import os
-from typing import List
-from fastapi import FastAPI, HTTPException, Query
-from fastapi.middleware.cors import CORSMiddleware
-from pymongo import MongoClient, DESCENDING
-from .routers import dictionary, grammar, vocab, analytics, ai, tests, english_test, idioms, content
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
-DB_NAME   = os.getenv("DB_NAME", "aasasasi_db")
+# backend/app/main.py
+from __future__ import annotations
+import os, re
+from importlib import import_module
+from typing import List
+
+from fastapi import FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
+from pymongo import MongoClient
 
 app = FastAPI(title="Aasaasi API")
 
-ALLOW_REGEX = os.getenv("CORS_ALLOW_ORIGIN_REGEX", r"^https://.*\.vercel\.app$")
+# --- CORS -------------------------------------------------------------
+_env_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
+allow_regex = r"^https?://([a-z0-9-]+\.)*vercel\.app(:\d+)?$"  # any *.vercel.app
+origins: List[str] = _env_origins or ["http://localhost:5173", "http://127.0.0.1:5173"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS","").split(",") if o.strip()],
-    allow_origin_regex=ALLOW_REGEX,
+    allow_origins=origins,
+    allow_origin_regex=allow_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
+# --- DB (Mongo) -------------------------------------------------------
+mongo_client: MongoClient | None = None
 
 @app.on_event("startup")
 def _startup():
-    client = MongoClient(MONGO_URI)
-    app.state.mongo = client
-    app.state.db = client[DB_NAME]
+    global mongo_client
+    url = os.getenv("MONGO_URL", "mongodb://127.0.0.1:27017")
+    name = os.getenv("MONGO_DB", "aasaasi_db")
+    mongo_client = MongoClient(url)
+    app.state.db = mongo_client[name]
 
-@app.get("/api/health")
-def health():
-    try:
-        app.state.db.command("ping")
-        return {"ok": True}
-    except Exception as e:
-        return {"ok": False, "error": str(e)}
+@app.on_event("shutdown")
+def _shutdown():
+    global mongo_client
+    if mongo_client:
+        mongo_client.close()
 
-app.include_router(dictionary.router,    prefix="/api")
-app.include_router(grammar.router,       prefix="/api")
-app.include_router(vocab.router,         prefix="/api")
-app.include_router(analytics.router,     prefix="/api")
-app.include_router(ai.router,            prefix="/api")
-app.include_router(tests.router,         prefix="/api")
-app.include_router(english_test.router,  prefix="/api")
-app.include_router(idioms.router,        prefix="/api")
-app.include_router(content.router,       prefix="/api")
-
-# Shims
-@app.get("/api/content/word-of-the-day")
-def shim_wotd():
-    db = app.state.db
-    doc = db["content_word_of_the_day"].find_one({"isCurrent": True}, {"_id": 0}) \
-       or db["content_word_of_the_day"].find_one({}, {"_id": 0}, sort=[("createdAt", DESCENDING)])
-    if not doc: raise HTTPException(404, "Word of the day not found")
-    return doc
-
-@app.get("/api/english-test/questions")
-def shim_questions(limit: int = Query(12, ge=1, le=50)) -> List[dict]:
-    items = list(app.state.db["english_test_questions"].find({}, {"_id": 0}).sort("createdAt", DESCENDING).limit(limit))
-    return items
-
-@app.get("/api/idioms/current")
-def shim_idiom():
-    db = app.state.db
-    doc = db["idioms"].find_one({"isCurrent": True}, {"_id": 0}) \
-       or db["idioms"].find_one({}, {"_id": 0}, sort=[("createdAt", DESCENDING)])
-    if not doc: raise HTTPException(404, "No idiom set")
-    return doc
-
-# Friendly home page instead of 404 at "/"
+# --- Root & simple HEAD (Render’s head probe sometimes hits /) --------
 @app.get("/")
 def root():
     return {"ok": True, "service": "Aasaasi API", "docs": "/docs", "health": "/api/health"}
 
-from app.routes.probes import router as probes_router
-app.include_router(probes_router)
+@app.head("/")
+def root_head():
+    return Response(status_code=200)
+
+# --- Include routers ---------------------------------------------------
+def _include(module_path: str, *, prefix: str = "/api"):
+    """Include a module's 'router' if present. No crash if missing."""
+    try:
+        mod = import_module(module_path)
+        router = getattr(mod, "router", None)
+        if router is not None:
+            # Only add /api prefix if routes inside are NOT already /api/*
+            pre = prefix
+            if module_path.endswith(".probes"):
+                # probes defines absolute '/api/health' and '/' already
+                pre = ""
+            app.include_router(router, prefix=pre)
+    except Exception:
+        # Silently skip if the file isn’t in this project (we don’t want to break prod)
+        pass
+
+# Routers under app.routers.*
+_include("app.routers.ai")          # /api/ai/...
+_include("app.routers.dictionary")  # /api/dictionary/...
+_include("app.routers.content")     # /api/content/...
+_include("app.routers.vocab")       # /api/vocab/...
+_include("app.routers.tests")       # /api/tests/...
+_include("app.routers.analytics")
+# Routers under app.routes.*  (kept for backward-compat)
+_include("app.routes.english_test") # /api/english-test/...
+_include("app.routes.grammar")      # /api/grammar/...
+_include("app.routes.idioms")       # /api/idioms/...
+_include("app.routes.probes")       # defines /api/health and '/'/HEAD itself (no extra /api)
+
+# Fallback health if probes isn’t present for some reason
+try:
+    from fastapi import APIRouter
+    _health_defined = any(str(r.path) == "/api/health" for r in app.router.routes)
+    if not _health_defined:
+        r = APIRouter()
+        @r.get("/api/health")
+        @r.head("/api/health")
+        def _health():
+            return {"status": "ok"}
+        app.include_router(r)
+except Exception:
+    pass
+
+
