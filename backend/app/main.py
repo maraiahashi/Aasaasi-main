@@ -11,17 +11,16 @@ DB_NAME   = os.getenv("DB_NAME", "aasasasi_db")
 
 app = FastAPI(title="Aasaasi API")
 
-# backend/app/main.py
-origins = [o.strip() for o in os.getenv("CORS_ORIGINS","").split(",") if o.strip()] or ["http://localhost:5173"]
-
+ALLOW_REGEX = os.getenv("CORS_ALLOW_ORIGIN_REGEX", r"^https://.*\.vercel\.app$")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS","").split(",") if o.strip()] or ["http://localhost:5173"],
-    allow_origin_regex=os.getenv("ALLOW_ORIGIN_REGEX", r"https://.*\.vercel\.app$"),
+    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS","").split(",") if o.strip()],
+    allow_origin_regex=ALLOW_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 @app.on_event("startup")
