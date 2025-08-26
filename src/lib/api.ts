@@ -1,21 +1,7 @@
-cat > src/lib/api.ts <<'TS'
-// Build-time base (Vite). Also tolerate Next-style if it sneaks in.
-const BUILT_BASE: string | undefined =
-  (import.meta as any)?.env?.VITE_API_BASE_URL ??
-  ((typeof process !== "undefined" && (process as any).env?.NEXT_PUBLIC_API_BASE_URL) || undefined);
-
-// Runtime override if you ever set it from the console or HTML.
-declare global { interface Window { __API_BASE__?: string } }
-const RUNTIME_BASE = typeof window !== "undefined" ? (window as any).__API_BASE__ : undefined;
-
-// Final base, with sensible fallbacks
-export const API_BASE: string =
-  RUNTIME_BASE ??
-  BUILT_BASE ??
-  (typeof window === "undefined" ? "http://localhost:8000" : "/api");
-
-// Expose for quick checks in DevTools
-if (typeof window !== "undefined") (window as any).__API_BASE__ = API_BASE;
+// src/lib/api.ts
+export const API_BASE =
+  // Allow override for local dev only
+  (import.meta as any).env?.VITE_API_BASE || "/api";
 
 function join(base: string, path: string) {
   const b = base.endsWith("/") ? base.slice(0, -1) : base;
@@ -37,9 +23,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  get:    <T>(path:string)=>request<T>(path),
-  post:   <T>(path:string,body?:unknown,init?:RequestInit)=>request<T>(path,{method:"POST",body:body==null?undefined:JSON.stringify(body),...init}),
-  put:    <T>(path:string,body?:unknown,init?:RequestInit)=>request<T>(path,{method:"PUT", body:body==null?undefined:JSON.stringify(body),...init}),
-  delete: <T>(path:string,init?:RequestInit)=>request<T>(path,{method:"DELETE",...init}),
+  get: <T>(path: string) => request<T>(path),
+  post: <T>(path: string, body?: unknown, init?: RequestInit) =>
+    request<T>(path, { method: "POST", body: body == null ? undefined : JSON.stringify(body), ...init }),
+  put: <T>(path: string, body?: unknown, init?: RequestInit) =>
+    request<T>(path, { method: "PUT", body: body == null ? undefined : JSON.stringify(body), ...init }),
+  delete: <T>(path: string, init?: RequestInit) =>
+    request<T>(path, { method: "DELETE", ...init }),
 };
-TS
