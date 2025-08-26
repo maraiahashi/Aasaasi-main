@@ -66,10 +66,11 @@ def idiom_of_the_week(request: Request, x_session_id: str = Header(default="anon
 # from .ai import _openai_client, _model, SYSTEM_PROMPT  # type: ignore
 
 # NEW (works no matter what)
+# in backend/app/routers/idioms.py OR backend/app/routes/idioms.py
 try:
-    from app.routers.ai import _openai_client, _model, SYSTEM_PROMPT  # absolute path
-except Exception:  # local tools fallback
-    from ..routers.ai import _openai_client, _model, SYSTEM_PROMPT    # relative up one pkg
+    from app.routers.ai import _openai_client, _model, SYSTEM_PROMPT
+except Exception:
+    from ..routers.ai import _openai_client, _model, SYSTEM_PROMPT
 
 @router.get("/idioms/archive")
 def idiom_archive(
