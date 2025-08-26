@@ -1,18 +1,39 @@
-// Node runtime only (NOT Edge)
-export const runtime = 'nodejs';
+import { MongoClient, Db } from "mongodb";
 
-import { MongoClient, Db } from 'mongodb';
+const uri =
+  process.env.MONGODB_URI ||
+  process.env.MONGO_URL ||
+  "";
 
-let client: MongoClient | null = null;
-let db: Db | null = null;
+const dbName =
+  process.env.MONGODB_DB ||
+  process.env.MONGO_DB ||
+  "aasaasi_db";
+
+if (!uri) {
+  throw new Error("Missing Mongo URI (set MONGODB_URI or MONGO_URL)");
+}
+
+type G = typeof globalThis & { __mongoClient?: MongoClient; __mongoDb?: Db; };
+const g = globalThis as G;
 
 export async function getDb(): Promise<Db> {
-  const uri = process.env.MONGODB_URI;
-  const name = process.env.MONGODB_DB || 'aasaasi_db';
-  if (!uri) throw new Error('MONGODB_URI is not set');
-  if (db) return db;
-  if (!client) client = new MongoClient(uri);
-  await client.connect();
-  db = client.db(name);
-  return db;
+  if (g.__mongoDb) return g.__mongoDb;
+  const client = g.__mongoClient ?? new MongoClient(uri);
+  if (!g.__mongoClient) {
+    await client.connect();
+    g.__mongoClient = client;
+  }
+  g.__mongoDb = client.db(dbName);
+  return g.__mongoDb;
+}
+
+export async function ping(): Promise<boolean> {
+  try {
+    const db = await getDb();
+    await db.command({ ping: 1 });
+    return true;
+  } catch {
+    return false;
+  }
 }

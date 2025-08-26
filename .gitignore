@@ -31,3 +31,6 @@ dump/
 
 .env.vercel
 dump_local/
+
+.env*
+dump_local/
