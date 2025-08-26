@@ -10,13 +10,19 @@ MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017")
 DB_NAME   = os.getenv("DB_NAME", "aasasasi_db")
 
 app = FastAPI(title="Aasaasi API")
+
+# backend/app/main.py
+origins = [o.strip() for o in os.getenv("CORS_ORIGINS","").split(",") if o.strip()] or ["http://localhost:5173"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://aasaasi-main.vercel.app"],
+    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS","").split(",") if o.strip()] or ["http://localhost:5173"],
+    allow_origin_regex=os.getenv("ALLOW_ORIGIN_REGEX", r"https://.*\.vercel\.app$"),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.on_event("startup")
 def _startup():
