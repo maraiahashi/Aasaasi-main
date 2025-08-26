@@ -82,6 +82,7 @@ def _handle_pymongo_err(_, exc: PyMongoError):
 
 # ---------- Routers ----------
 from app.routers import dictionary, grammar, vocab, analytics, ai, tests, idioms, content  # type: ignore
+from .routes.english_test import router as english_test_router
 try:
     from app.routes import english_test  # type: ignore
 except Exception:
@@ -95,5 +96,6 @@ app.include_router(ai.router,          prefix="/api")
 app.include_router(tests.router,       prefix="/api")
 app.include_router(idioms.router,      prefix="/api")
 app.include_router(content.router,     prefix="/api")
-if english_test:
-    app.include_router(english_test.router, prefix="/api")
+app.include_router(english_test.router, prefix="/api")
+app.include_router(english_test_router, prefix="/api/english-test")
+

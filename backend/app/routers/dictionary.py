@@ -2,12 +2,20 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel
 from typing import List, Optional, Literal, Dict, Any
 from datetime import datetime
-import re, json
+import re, json, os
 
-# use the AI helpers (for backfill only)
 from .ai import _openai_client, _model, SYSTEM_PROMPT
 
 router = APIRouter(prefix="/dictionary", tags=["dictionary"])
+
+# allow overriding the collection name (default "dictionary")
+_DICT_COLL = os.getenv("DICT_COLLECTION", "dictionary")
+
+# candidate fields per direction (covers casing/aliases)
+_FIELD_CANDS = {
+    "en-so": ["Headword", "English", "headword", "english", "EN", "Word_EN", "word_en"],
+    "so-en": ["Somali", "SO", "somali", "Word_SO", "word_so"],
+}
 
 # ---------- models
 class WordOut(BaseModel):
@@ -22,7 +30,7 @@ class WordOut(BaseModel):
     phrase: Optional[str] = None
     usageNote: Optional[str] = None
     examples: List[str] = []
-    ai: Optional[bool] = False  # True if AI backfilled
+    ai: Optional[bool] = False
 
 # ---------- helpers
 def _get(doc: Dict[str, Any], *names: str) -> Optional[Any]:
@@ -38,8 +46,8 @@ def _get(doc: Dict[str, Any], *names: str) -> Optional[Any]:
     return None
 
 def _doc_to_out(doc: Dict[str, Any], direction: str) -> WordOut:
-    headword       = _get(doc, "Headword", "English", "EN", "Word_EN")
-    somali         = _get(doc, "Somali", "SO", "Word_SO", "Somali Translation")
+    headword       = _get(doc, "Headword", "English", "EN", "Word_EN", "headword", "english", "word_en")
+    somali         = _get(doc, "Somali", "SO", "Word_SO", "Somali Translation", "somali", "word_so")
     part_of_speech = _get(doc, "Part of Speech", "POS", "partOfSpeech")
     pronunciation  = _get(doc, "Pronunciation", "pronunciation", "Pron")
     word_forms     = _get(doc, "Word Forms", "wordForms")
@@ -103,7 +111,6 @@ def _parse_ai_json(reply: str) -> Optional[Dict[str, Any]]:
         return None
 
 def _ai_backfill(term: str, direction: str, base: WordOut) -> Optional[WordOut]:
-    """Fill ONLY missing fields; preserve existing Mongo values."""
     client = _openai_client()
 
     known = {}
@@ -169,37 +176,17 @@ def lookup(
     if not q:
         raise HTTPException(400, "Empty term")
 
-    coll = db["dictionary"]
+    coll = db[_DICT_COLL]
     out: Optional[WordOut] = None
     source = "mongo"
 
-    # --- Mongo query
-    if dir == "en-so":
-        exact = coll.find_one({"$or": [
-            {"Headword": {"$regex": f"^{re.escape(q)}$", "$options": "i"}},
-            {"English":  {"$regex": f"^{re.escape(q)}$", "$options": "i"}},
-        ]})
-        pref = None if exact else coll.find_one({"$or": [
-            {"Headword": {"$regex": f"^{re.escape(q)}", "$options": "i"}},
-            {"English":  {"$regex": f"^{re.escape(q)}", "$options": "i"}},
-        ]})
-        doc = exact or pref
-        if doc:
-            out = _doc_to_out(doc, dir)
-    else:
-        exact = coll.find_one({"$or": [
-            {"Somali": {"$regex": f"^{re.escape(q)}$", "$options": "i"}},
-            {"SO":     {"$regex": f"^{re.escape(q)}$", "$options": "i"}},
-        ]})
-        pref = None if exact else coll.find_one({"$or": [
-            {"Somali": {"$regex": f"^{re.escape(q)}", "$options": "i"}},
-            {"SO":     {"$regex": f"^{re.escape(q)}", "$options": "i"}},
-        ]})
-        doc = exact or pref
-        if doc:
-            out = _doc_to_out(doc, dir)
+    fields = _FIELD_CANDS["en-so" if dir == "en-so" else "so-en"]
+    exact = coll.find_one({"$or": [{f: {"$regex": f"^{re.escape(q)}$", "$options": "i"}} for f in fields]})
+    pref  = None if exact else coll.find_one({"$or": [{f: {"$regex": f"^{re.escape(q)}",  "$options": "i"}} for f in fields]})
+    doc = exact or pref
+    if doc:
+        out = _doc_to_out(doc, dir)
 
-    # --- Backfill only if we found something but it’s incomplete
     backfilled = False
     if out and _needs_backfill(out):
         try:
@@ -222,7 +209,6 @@ def lookup(
         except Exception:
             pass
 
-    # --- NO full AI fallback. Unknown words => 404.
     try:
         db.events.insert_one({
             "sessionId": _sid(request),
@@ -258,13 +244,16 @@ def suggest(
     if not q:
         return []
 
-    coll = db["dictionary"]
-    field_candidates = (["Headword", "English"] if dir == "en-so" else ["Somali", "SO"])
+    coll = db[_DICT_COLL]
+    field_candidates = _FIELD_CANDS["en-so" if dir == "en-so" else "so-en"]
 
     out: List[str] = []
     seen = set()
     for field in field_candidates:
-        cur = coll.find({field: {"$regex": f"^{re.escape(q)}", "$options": "i"}}, {field: 1, "_id": 0}).limit(limit * 2)
+        cur = coll.find(
+            {field: {"$regex": f"^{re.escape(q)}", "$options": "i"}},
+            {field: 1, "_id": 0}
+        ).limit(limit * 3)
         for d in cur:
             s = d.get(field)
             if s:

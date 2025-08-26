@@ -28,3 +28,6 @@ backend/.env
 .env.production
 .env.production
 dump/
+
+.env.vercel
+dump_local/
