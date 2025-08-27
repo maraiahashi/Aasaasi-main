@@ -1,5 +1,7 @@
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://aasaasi-main.onrender.com/api/$1" }
-  ]
+  "functions": {
+    "api/**/*.{js,ts}": {
+      "includeFiles": "data/**"
+    }
+  }
 }
