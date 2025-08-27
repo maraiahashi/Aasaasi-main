@@ -1,66 +1,26 @@
-// src/app/api/health/route.ts (only used if you run Next.js App Router)
-import { NextResponse } from 'next/server';
-import { MongoClient } from 'mongodb';
-export const runtime = 'nodejs';
+import { NextResponse } from "next/server";
+import { getEnglishTestQuestions } from "@/src/lib/localdb";
+export const runtime = "nodejs";
 
-const g = globalThis as any;
-
-function getUri() {
-  return (
-    process.env.MONGODB_URI ||
-    process.env.MONGODB_URL ||
-    process.env.MONGO_URL || ''
-  );
-}
-function getDbName() {
-  return (
-    process.env.MONGODB_DB ||
-    process.env.MONGO_DB ||
-    process.env.MONGO_DATABASE ||
-    'aasaasi_db'
-  );
-}
-
-async function getDb() {
-  const uri = getUri();
-  const name = getDbName();
-  if (!uri || !name) throw new Error('Missing MONGO_URL or MONGO_DB');
-
-  if (!g.__mongoClient) g.__mongoClient = new MongoClient(uri);
-  if (!g.__mongoClient.topology?.isConnected?.()) {
-    await g.__mongoClient.connect();
-  }
-  return g.__mongoClient.db(name);
+function shuffle<T>(a: T[]): T[] {
+  for (let i=a.length-1; i>0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
 }
 
 export async function GET(req: Request) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const limit = Math.min(parseInt(searchParams.get('limit') || '0', 10) || 0, 50);
-    const db = await getDb();
+  const { searchParams } = new URL(req.url);
+  const limit = Math.min(parseInt(searchParams.get("limit") || "12", 10), 50);
 
-    if (limit > 0) {
-      const docs = await db
-        .collection('english_test_questions')
-        .aggregate([{ $sample: { size: limit } }])
-        .toArray();
-      return NextResponse.json(docs);
-    }
-
-    const [dict, etq] = await Promise.all([
-      db.collection('dictionary').estimatedDocumentCount(),
-      db.collection('english_test_questions').estimatedDocumentCount(),
-    ]);
-
-    return NextResponse.json({
-      status: 'ok',
-      db: 'up',
-      counts: { dictionary: dict, english_test_questions: etq },
-    });
-  } catch (e: any) {
-    return NextResponse.json(
-      { status: 'ok', db: 'down', err: String(e?.message || e) },
-      { status: 200 }
-    );
+  const pool = getEnglishTestQuestions();
+  const pick: any[] = [];
+  const used = new Set<number>();
+  while (pick.length < Math.min(limit, pool.length)) {
+    const i = Math.floor(Math.random()*pool.length);
+    if (!used.has(i)) { used.add(i); pick.push(pool[i]); }
   }
+  const out = pick.map((d: any) => {
+    const opts = [d.correct, d.distractor1, d.distractor2, d.distractor3].filter(Boolean);
+    return { id: String(d._id || d.id || crypto.randomUUID()), question: d.question, options: shuffle(opts) };
+  });
+  return NextResponse.json({ questions: out });
 }

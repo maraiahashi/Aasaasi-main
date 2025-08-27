@@ -1,0 +1,82 @@
+{"_id":{"$oid":"68a208fbcd62724bd55caf39"},"topic":"advice-vs-advise","text":"My mother gave me some good ___","options":["advice","advise"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf3a"},"topic":"advice-vs-advise","text":"I ___ you to be careful.","options":["advise","advice"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf3b"},"topic":"advice-vs-advise","text":"My parents always _______ me to work hard and never give up on my dreams.","options":["advise","advice"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf3c"},"topic":"advice-vs-advise","text":"I would ___________ against taking out a loan to pay for your vacation.","options":["advise","advice"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf3d"},"topic":"bored-vs-boring","text":"The film was so _____ that I fell asleep.","options":["boring","bored"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf3e"},"topic":"bored-vs-boring","text":"The manager gave a ______ speech","options":["boring","bored"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf3f"},"topic":"bored-vs-boring","text":"The teacher is so _____.","options":["boring","bored"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf40"},"topic":"bored-vs-boring","text":"My sister gets _____ when our mother is not home.","options":["bored","boring"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf41"},"topic":"borrow-vs-lend","text":"People are allowed to ______ books from the library.","options":["borrow","lend"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf42"},"topic":"borrow-vs-lend","text":"Ahmed _____ 200 dollars from me.","options":["borrowed","lend"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf43"},"topic":"borrow-vs-lend","text":"Can you _____ me 20 dollars?","options":["lend","borrowing"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf44"},"topic":"borrow-vs-lend","text":"I never _____ my CDs to anyone.","options":["lend","borrow"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf45"},"topic":"both-vs-either","text":"I can have ice cream or I can have a cake.  I can have___________ of them.","options":["either","both"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf46"},"topic":"both-vs-either","text":"I took the test twice and failed______ times.","options":["both","either"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf47"},"topic":"both-vs-either","text":"_____Hamda or Amal would be fine for the job.","options":["either","both"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf48"},"topic":"both-vs-either","text":"I left the keys ____ at home or in the car.","options":["either","both"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf49"},"topic":"both-vs-either","text":"Both Malaysia and Turkey are popular destinations for Arab families.","options":["both","either"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf4a"},"topic":"both-vs-either","text":"My sisters are in high school, but ____ of them will start university next year.","options":["both","either"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf4b"},"topic":"both-vs-either","text":"____ you or Maria has to finish the project by 5pm.","options":["either","both"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf4c"},"topic":"both-vs-either","text":"You can have ____ the white shirt or the blue shirt.","options":["either","both"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf4d"},"topic":"both-vs-either","text":"___ Mona and Maria wear traditional clothes.","options":["both","either"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf4e"},"topic":"neither-vs-nor","text":"The restaurant had neither  good food ___ good service.","options":["nor","neither"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf4f"},"topic":"neither-vs-nor","text":"His latest book was ___  interesting  nor  well-written.","options":["neither","nor"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf50"},"topic":"neither-vs-nor","text":"The president said he  had ___  time nor  interest in the project.","options":["neither","nor"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf51"},"topic":"neither-vs-nor","text":"I have neither the time ___  the energy to work on the project today.","options":["nor","neither"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf52"},"topic":"do-vs-make","text":"Please ______ a sandwich for me.","options":["make","do","making"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf53"},"topic":"do-vs-make","text":"People ______ mistakes.","options":["make","do","done"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf54"},"topic":"do-vs-make","text":"I am glad to ______ business with you.","options":["do","make","made"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf55"},"topic":"do-vs-make","text":"I usually _____ some reading before I write the report.","options":["do","make","making"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf56"},"topic":"hear-vs-listen","text":"Did you _____ about the news?","options":["hear","listen"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf57"},"topic":"hear-vs-listen","text":"I _____ to the BBC news everyday.","options":["listen","hear"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf58"},"topic":"hear-vs-listen","text":"I tried to ______ to him as carefully as I could  but I was unable to hear a word of what he said.","options":["listen","hear"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf59"},"topic":"hear-vs-listen","text":"I can ____ you well.","options":["hear","listen"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf5a"},"topic":"between-vs-among","text":"He spends a lot of time at home ____ his family members.","options":["among","between"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf5b"},"topic":"between-vs-among","text":"Singapore is a small island  located _____ Malaysia and Indonesia.","options":["between","among"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf5c"},"topic":"between-vs-among","text":"I saw some of my friends _____ the crowd.","options":["among","between"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf5d"},"topic":"between-vs-among","text":"Discuss about the issue _____ yourselves.","options":["among","between"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf5e"},"topic":"little-vs-a-little","text":"I have _ time to finish my homework","options":["little","a little"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf5f"},"topic":"little-vs-a-little","text":"Could you pass me _____ sugar, please?","options":["a little","little"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf60"},"topic":"little-vs-a-little","text":"They have __ money to spend.","options":["little","a little"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf61"},"topic":"very-vs-too","text":"She was ____ tired to go out last night.","options":["too","very"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf62"},"topic":"very-vs-too","text":"The movie was ____ long that I fell asleep halfway through.","options":["too","very"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf63"},"topic":"very-vs-too","text":"She ate ____ much pizza that she felt sick afterward.","options":["too","very"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf64"},"topic":"very-vs-too","text":"The little girl was ____ happy when she received her first bicycle.","options":["very","too"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf65"},"topic":"on-time-vs-in-time","text":"Ahmed came ______ for lunch just five minutes before we agreed.","options":["in time","on time","time"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf66"},"topic":"on-time-vs-in-time","text":"They all arrived _____  so we can start the meeting.","options":["on time","in time","time"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf67"},"topic":"on-time-vs-in-time","text":"We arrived just ____ for my flight to Paris. I did not miss the flight.","options":["in time","on time","time"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf68"},"topic":"good-vs-well","text":"That shirt looks ____ on you.","options":["good","well"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf69"},"topic":"good-vs-well","text":"Asiya speaks English very _____.","options":["well","good"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf6a"},"topic":"good-vs-well","text":"Hassan is very _____ at English.","options":["good","well"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf6b"},"topic":"fun-vs-funny","text":"She shares _____stories with her students.","options":["funny","fun","niether"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf6c"},"topic":"fun-vs-funny","text":"He is a _____  guy who makes us laugh.","options":["funny","fun","niether"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf6d"},"topic":"fun-vs-funny","text":"Hamza plays chess for ____.","options":["fun","funny","niether"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf6e"},"topic":"fun-vs-funny","text":"What is so ____? Why are you laughing?","options":["funny","fun","niether"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf6f"},"topic":"few-vs-a-few","text":"____ students came on time to class. As a teacher I will do something about this.","options":["few","a few"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf70"},"topic":"few-vs-a-few","text":"The restaurant was crowded, but we managed to get a table in just _ minutes.","options":["few","a few"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf71"},"topic":"few-vs-a-few","text":"We have ____ options left, so we'll have to make the best of what we have.","options":["few","a few"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf72"},"topic":"few-vs-a-few","text":"We have ____ seats left for the event, so you'll need to book soon if you want to come.","options":["few","a few"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf73"},"topic":"tell-vs-say","text":"Can someone ____ me how to get to the Mall?","options":["tell","say","niether"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf74"},"topic":"tell-vs-say","text":"Let me ___ a few  words before we end the meeting.","options":["say","tell","niether"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf75"},"topic":"tell-vs-say","text":"He never ____ anything bad about anyone.","options":["says","tells","niether"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf76"},"topic":"tell-vs-say","text":"My boss often ____ me what to do.","options":["tells","says","niether"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf77"},"topic":"you-and-i-vs-you-and-me","text":"These two tickets are for ___.","options":["you and me","you and I"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf78"},"topic":"you-and-i-vs-you-and-me","text":"I was told that ___ are responsible for finishing the report.","options":["you and I","you and me"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf79"},"topic":"you-and-i-vs-you-and-me","text":"The teacher gave ___  a good grade on the project.","options":["you and me","you and I"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf7a"},"topic":"you-and-i-vs-you-and-me","text":"___ walked to the mall yesterday.","options":["you and I","you and me"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf7b"},"topic":"confusing-vs-confused","text":"Which word describes a person who is unable to make a decision?","options":["confused","confusing"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf7c"},"topic":"confusing-vs-confused","text":"The directions to the new restaurant were very ___ .","options":["confusing","confused"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf7d"},"topic":"confusing-vs-confused","text":"I feel __ about my future plans.","options":["confused","confusing"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf7e"},"topic":"house-vs-home","text":"I feel most comfortable when I am at ___.","options":["home","house"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf7f"},"topic":"house-vs-home","text":"After a long day at work, I like to go ___ and relax.","options":["home","house"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf80"},"topic":"house-vs-home","text":"I just bought a new ___ in Nairobi.","options":["house","home"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf81"},"topic":"house-vs-home","text":"Your ___ is much bigger than ours.","options":["house","home"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf82"},"topic":"house-vs-home","text":"___ is where the heart is.","options":["home","house"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf83"},"topic":"complementary-vs-complimentary","text":"Which word means acting as a complement or supplement ?","options":["complimentary","complementary"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf84"},"topic":"complementary-vs-complimentary","text":"The hotel offered a ________ shuttle service to and from the airport.","options":["complementary","complimentary"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf85"},"topic":"complementary-vs-complimentary","text":"The colors of the shirt and the pants are ________.","options":["complimentary","complementary"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf86"},"topic":"complementary-vs-complimentary","text":"The restaurant offers a free dessert as a ________ gift for their regular customers.","options":["complementary","complimentary"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf87"},"topic":"who-vs-whom","text":"To ___ should I send this letter?","options":["whom","who"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf88"},"topic":"who-vs-whom","text":"___ do you think is telling the truth?","options":["who","whom"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf89"},"topic":"who-vs-whom","text":"___ did he speak to at the meeting?","options":["whom","who"],"answerIndex":{"$numberInt":"0"}}
+{"_id":{"$oid":"68a208fbcd62724bd55caf8a"},"topic":"who-vs-whom","text":"___ can I talk to about the problem?","options":["whom","who"],"answerIndex":{"$numberInt":"0"}}
