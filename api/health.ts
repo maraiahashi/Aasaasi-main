@@ -1,6 +1,6 @@
 export default async function handler(req: any, res: any) {
   try {
-    const dbmod = await import("./_db");
+    const dbmod = await import("./_db.js");       // NOTE: .js
     const env = dbmod.debugEnv();
     try {
       const db = await dbmod.getDb();

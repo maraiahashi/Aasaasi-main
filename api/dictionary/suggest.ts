@@ -1,13 +1,11 @@
 function escapeRegex(s: string) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
-
 export default async function handler(req: any, res: any) {
   try {
-    const { getDb } = await import("../_db");
+    const { getDb } = await import("../_db.js");  // NOTE: ../ and .js
     const url = new URL(req.url, `http://${req.headers.host}`);
     const term = (url.searchParams.get("term") || "").trim();
     const dir = (url.searchParams.get("dir") || "en-so").toLowerCase();
     if (!term) return res.status(200).json([]);
-
     const field = dir.startsWith("en") ? "english" : "somali";
     const db = await getDb();
     const docs = await db.collection("dictionary")

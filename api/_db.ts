@@ -29,17 +29,10 @@ export async function getDb(): Promise<Db> {
   if (cachedDb) return cachedDb;
 
   const { uri, dbName } = readEnv();
-  if (!uri || !dbName) {
-    throw new Error("Missing Mongo env: set MONGO_URL/MONGO_DB or MONGODB_URI/MONGODB_DB");
-  }
-  if (/\r|\n/.test(uri)) {
-    throw new Error("MONGO_URL/MONGODB_URI contains a newline — re-add as a single line.");
-  }
+  if (!uri || !dbName) throw new Error("Missing Mongo env: set MONGO_URL/MONGO_DB or MONGODB_URI/MONGODB_DB");
+  if (/\r|\n/.test(uri)) throw new Error("MONGO_URL/MONGODB_URI contains a newline — re-add as a single line.");
 
-  if (!cachedClient) {
-    cachedClient = new MongoClient(uri);
-    await cachedClient.connect();
-  }
+  if (!cachedClient) { cachedClient = new MongoClient(uri); await cachedClient.connect(); }
   cachedDb = cachedClient.db(dbName);
   return cachedDb;
 }
