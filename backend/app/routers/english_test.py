@@ -132,6 +132,7 @@ def get_questions(
         pool = _load_fallback()
         docs = _sample_quick(pool, total) if mode == "quick" else _sample_cefr(pool, total)
 
+ # ...inside get_questions(...)
     out: List[Dict[str, Any]] = []
     for idx, d in enumerate(docs, 1):
         opts = [d.get("correct",""), d.get("distractor1",""), d.get("distractor2",""), d.get("distractor3","")]
@@ -140,7 +141,10 @@ def get_questions(
         out.append({
             "id": str(d.get("_id", idx)),
             "question": d.get("question",""),
-            "options": opts
+            "options": opts,
+            # NEW: include the tags the UI needs (works for Atlas and fallback)
+            "quick3": d.get("quick3") or None,
+            "level6": d.get("level6") or None,
         })
     return {"questions": _shuffle(out)}
 
