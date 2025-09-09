@@ -1,5 +1,7 @@
 // src/pages/DictionaryPage.tsx
 import { useMemo, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +36,10 @@ const Dictionary = () => {
   const [searchResult, setSearchResult] = useState<Result | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // "Learn with AI" section (like WordOfTheDay)
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiText, setAiText] = useState("");
 
   const speakWord = (text?: string) => {
     if (!text) return;
@@ -96,9 +102,10 @@ const Dictionary = () => {
 
   const handleSearch = async () => {
     const q = searchTerm.trim();
-    if (!q) { setSearchResult(null); setSuggestions([]); return; }
+    if (!q) { setSearchResult(null); setSuggestions([]); setAiText(""); return; }
     setLoading(true);
     setSuggestions([]);
+    setAiText(""); // clear any previous AI explanation on new searches
 
     try {
       // 1) try Mongo
@@ -152,6 +159,49 @@ const Dictionary = () => {
       setSearchResult({ word: q, error: "Backend is offline. Please start the API server." });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Learn with AI – explain the *current* word
+  const askAI = async () => {
+    if (!searchResult || searchResult.error) return;
+    const head = (searchResult.headword || searchResult.word || "").trim();
+    if (!head || aiLoading) return;
+
+    try {
+      setAiLoading(true);
+      setAiText("");
+
+      // Provide context if we already have parts of the entry
+      const ctxMeaning = searchResult.meaning || searchResult.definition;
+      const ctxTrans = searchResult.somaliTranslation;
+
+      const prompt =
+        `Explain the ${dir === "en-so" ? "English" : "Somali"} word "${head}" for ${dir === "en-so" ? "Somali" : "English"} learners.\n` +
+        (ctxMeaning ? `Known meaning: ${ctxMeaning}\n` : "") +
+        (ctxTrans ? `Known translation: ${ctxTrans}\n` : "") +
+        `Include: 1) Simple explanation  2) ${
+          dir === "en-so" ? "Somali" : "English"
+        } translation  3) Three short example sentences  4) Common collocations (3–5)  5) Quick pronunciation hint.\n` +
+        `Format as clean Markdown with short headings (no code blocks).`;
+
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Session-Id": sessionId },
+        body: JSON.stringify({ message: prompt }),
+      });
+
+      if (res.status === 401) {
+        setAiText("Sorry—AI isn’t configured on the server (missing OPENAI_API_KEY).");
+        return;
+      }
+      const j = await res.json();
+      setAiText(j?.reply || "Sorry—no explanation available.");
+      await logEvent(sessionId, "ai_explain_word", { word: head.toLowerCase(), dir });
+    } catch (e: any) {
+      setAiText(`Sorry—AI explanation is unavailable (${e?.message || "error"}).`);
+    } finally {
+      setAiLoading(false);
     }
   };
 
@@ -223,12 +273,31 @@ const Dictionary = () => {
                 <CardTitle className="text-2xl text-primary flex items-center gap-3">
                   {searchResult.error ? "Search Result" : (searchResult.headword || searchResult.word)}
                   {!searchResult.error && (
-                    <Button variant="ghost" size="icon" onClick={() => speakWord(searchResult.headword || searchResult.word)} title="Play word">
-                      <Volume2 className="h-5 w-5" />
-                    </Button>
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => speakWord(searchResult.headword || searchResult.word)}
+                        title="Play word"
+                      >
+                        <Volume2 className="h-5 w-5" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={askAI}
+                        disabled={aiLoading}
+                        title="Learn with AI"
+                        className="ml-1"
+                      >
+                        <Sparkles className="h-4 w-4 mr-1" />
+                        {aiLoading ? "Thinking…" : "Learn with AI"}
+                      </Button>
+                    </>
                   )}
                 </CardTitle>
               </CardHeader>
+
               <CardContent>
                 {searchResult.error ? (
                   <div className="text-center py-8">
@@ -290,6 +359,34 @@ const Dictionary = () => {
                         </ul>
                       </div>
                     )}
+
+                    {/* AI Explanation (like WordOfTheDay) */}
+                    <div className="pt-2">
+                      {aiText && (
+                        <div className="p-5 rounded-xl bg-muted">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-semibold text-primary">AI Explanation</h4>
+                            <TTSButton text={aiText} />
+                          </div>
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                              h1: (p) => <h1 className="text-xl font-bold mt-2 mb-1" {...p} />,
+                              h2: (p) => <h2 className="text-lg font-semibold mt-2 mb-1" {...p} />,
+                              h3: (p) => <h3 className="font-semibold mt-2 mb-1 text-primary" {...p} />,
+                              p:  (p) => <p className="leading-relaxed mb-2" {...p} />,
+                              ul: (p) => <ul className="list-disc ml-6 space-y-1 mb-2" {...p} />,
+                              ol: (p) => <ol className="list-decimal ml-6 space-y-1 mb-2" {...p} />,
+                              li: (p) => <li className="leading-relaxed" {...p} />,
+                              code: (p) => <code className="px-1 py-0.5 rounded bg-muted" {...p} />,
+                            }}
+                          >
+                            {aiText}
+                          </ReactMarkdown>
+                        </div>
+                      )}
+                    </div>
+                    {/* /AI Explanation */}
                   </div>
                 )}
               </CardContent>

@@ -1,0 +1,22 @@
+[
+  { "question": "There hasn’t been a school in this village ____ 2010.", "correct": "since", "distractor1": "for", "distractor2": "from", "distractor3": "at", "quick3": "Beginner", "level6": "A2" },
+  { "question": "My father ____ to work with our neighbor last year.", "correct": "went", "distractor1": "go", "distractor2": "gone", "distractor3": "going", "quick3": "Beginner", "level6": "A2" },
+  { "question": "We ____ for almost an hour before we found a camping site.", "correct": "walked", "distractor1": "were walk", "distractor2": "have walk", "distractor3": "walking", "quick3": "Beginner", "level6": "A2" },
+  { "question": "Our team hasn’t won a match ____ 1998.", "correct": "since", "distractor1": "for", "distractor2": "by", "distractor3": "on", "quick3": "Beginner", "level6": "A2" },
+  { "question": "These tablets sometimes ____ dizziness.", "correct": "cause", "distractor1": "causes", "distractor2": "causing", "distractor3": "caused", "quick3": "Beginner", "level6": "A2" },
+  { "question": "He ____ work at six.", "correct": "starts", "distractor1": "start", "distractor2": "is start", "distractor3": "has start", "quick3": "Beginner", "level6": "A1" },
+
+  { "question": "I need to speak with you. ____ you busy now?", "correct": "Are", "distractor1": "Do", "distractor2": "Is", "distractor3": "Did", "quick3": "Intermediate", "level6": "B1" },
+  { "question": "Sagal is ____ in math. She likes it a lot.", "correct": "interested", "distractor1": "interesting", "distractor2": "interest", "distractor3": "interests", "quick3": "Intermediate", "level6": "B1" },
+  { "question": "When I was a child, I ____ to read for hours.", "correct": "used", "distractor1": "use", "distractor2": "am used", "distractor3": "uses", "quick3": "Intermediate", "level6": "B1" },
+  { "question": "If it ____ tomorrow, we’ll cancel the picnic.", "correct": "rains", "distractor1": "rain", "distractor2": "rained", "distractor3": "is rain", "quick3": "Intermediate", "level6": "B1" },
+  { "question": "They’ve lived here ____ ten years.", "correct": "for", "distractor1": "since", "distractor2": "at", "distractor3": "by", "quick3": "Intermediate", "level6": "B1" },
+  { "question": "The movie was ____ than I expected.", "correct": "better", "distractor1": "good", "distractor2": "more good", "distractor3": "best", "quick3": "Intermediate", "level6": "B1" },
+
+  { "question": "By the time we arrived, the meeting ____.", "correct": "had started", "distractor1": "has started", "distractor2": "was start", "distractor3": "started", "quick3": "Advanced", "level6": "B2" },
+  { "question": "I’d rather you ____ me earlier next time.", "correct": "told", "distractor1": "tell", "distractor2": "have told", "distractor3": "will tell", "quick3": "Advanced", "level6": "B2" },
+  { "question": "Not only ____ late, but he also forgot the documents.", "correct": "was he", "distractor1": "he was", "distractor2": "is he", "distractor3": "he is", "quick3": "Advanced", "level6": "C1" },
+  { "question": "Had I known, I ____ you immediately.", "correct": "would have called", "distractor1": "will call", "distractor2": "would call", "distractor3": "called", "quick3": "Advanced", "level6": "C1" },
+  { "question": "She speaks English ____ her colleagues.", "correct": "as well as", "distractor1": "as good as", "distractor2": "so well like", "distractor3": "well like", "quick3": "Advanced", "level6": "B2" },
+  { "question": "Hardly ____ the door when the alarm went off.", "correct": "had I closed", "distractor1": "I had closed", "distractor2": "have I closed", "distractor3": "I have closed", "quick3": "Advanced", "level6": "C1" }
+]

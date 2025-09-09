@@ -131,7 +131,6 @@ def chat(
         reply = (resp.choices[0].message.content or "").strip()
 
         # Safety: if the user asked for JSON but the model returned fenced blocks,
-        # unwrap ```json ... ``` or ``` ... ``` so the frontend gets plain JSON.
         wants_json = bool(re.search(r"\b(json only|reply with json|return json)\b", payload.message, flags=re.I))
         if wants_json:
             # try to extract first {...} block if fences slipped in

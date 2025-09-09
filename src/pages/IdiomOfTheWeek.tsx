@@ -31,7 +31,7 @@ const IdiomOfTheWeek = () => {
   const [archive, setArchive] = useState<Idiom[]>([]);
   const [loadingArchive, setLoadingArchive] = useState(false);
 
-  // TS-safe wrapper so we can use custom event names without changing lib types
+  
   const logIdiomViewed = async (idiom?: string, week?: string) => {
     try {
       await (logEvent as unknown as (sid: string, ev: string, payload?: any) => Promise<void>)(
